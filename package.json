@@ -1,0 +1,31 @@
+{
+  "name": "beach-monitor",
+  "version": "1.0.0",
+  "description": "Aplicativo web para monitoramento de praias: maré, ondas, temperatura da água e previsão do tempo em tempo real.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . --listen 3000",
+    "dev":   "npx serve . --listen 3000",
+    "serve": "npx serve ."
+  },
+  "keywords": [
+    "beach",
+    "weather",
+    "marine",
+    "waves",
+    "tide",
+    "forecast",
+    "open-meteo",
+    "nominatim",
+    "geocoding"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/beach-monitor.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

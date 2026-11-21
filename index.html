@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏖️ Beach Monitor — Monitor de Praias</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="header__brand">
+        <span class="header__icon">🌊</span>
+        <h1 class="header__title">Beach Monitor</h1>
+      </div>
+      <p class="header__subtitle">Monitoramento completo de praias em tempo real</p>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-card">
+        <h2 class="search-card__title">🔍 Buscar Praia</h2>
+        <p class="search-card__desc">
+          Digite o nome de uma praia para ver condições de maré, ondas, temperatura e previsão do tempo.
+        </p>
+        <div class="search-form">
+          <div class="search-input-wrapper">
+            <span class="search-icon">📍</span>
+            <input
+              type="text"
+              id="beachInput"
+              class="search-input"
+              placeholder="Ex: Praia de Copacabana, Rio de Janeiro"
+              autocomplete="off"
+            />
+            <ul id="autocompleteList" class="autocomplete-list hidden"></ul>
+          </div>
+          <button id="searchBtn" class="search-btn">
+            <span class="search-btn__icon">🌊</span>
+            Monitorar
+          </button>
+        </div>
+        <div class="quick-beaches">
+          <span class="quick-label">Praias populares:</span>
+          <button class="quick-btn" data-beach="Praia de Copacabana, Rio de Janeiro">Copacabana</button>
+          <button class="quick-btn" data-beach="Praia de Ipanema, Rio de Janeiro">Ipanema</button>
+          <button class="quick-btn" data-beach="Praia de Jurerê, Florianópolis">Jurerê</button>
+          <button class="quick-btn" data-beach="Praia do Futuro, Fortaleza">Fortaleza</button>
+          <button class="quick-btn" data-beach="Praia de Morro de São Paulo, Bahia">Morro SP</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSection" class="loading-section hidden">
+      <div class="spinner"></div>
+      <p class="loading-text">Buscando dados da praia...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorSection" class="error-section hidden">
+      <span class="error-icon">⚠️</span>
+      <p id="errorMsg" class="error-msg"></p>
+    </div>
+
+    <!-- Results -->
+    <section id="resultsSection" class="results-section hidden">
+
+      <!-- Location Header -->
+      <div class="location-header">
+        <div class="location-header__info">
+          <h2 id="locationName" class="location-name"></h2>
+          <p id="locationCoords" class="location-coords"></p>
+        </div>
+        <div id="weatherIcon" class="weather-icon-large"></div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="cards-grid">
+
+        <!-- Temperatura do Ar -->
+        <div class="card card--weather">
+          <div class="card__header">
+            <span class="card__icon">🌡️</span>
+            <h3 class="card__title">Temperatura do Ar</h3>
+          </div>
+          <div class="card__body">
+            <div class="metric metric--large">
+              <span id="airTemp" class="metric__value">--</span>
+              <span class="metric__unit">°C</span>
+            </div>
+            <div class="metric-row">
+              <div class="metric-mini">
+                <span class="metric-mini__label">Sensação</span>
+                <span id="feelsLike" class="metric-mini__value">--°C</span>
+              </div>
+              <div class="metric-mini">
+                <span class="metric-mini__label">Umidade</span>
+                <span id="humidity" class="metric-mini__value">--%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Temperatura da Água -->
+        <div class="card card--marine">
+          <div class="card__header">
+            <span class="card__icon">🌊</span>
+            <h3 class="card__title">Temperatura da Água</h3>
+          </div>
+          <div class="card__body">
+            <div class="metric metric--large">
+              <span id="waterTemp" class="metric__value">--</span>
+              <span class="metric__unit">°C</span>
+            </div>
+            <div class="metric-row">
+              <div class="metric-mini">
+                <span class="metric-mini__label">Visibilidade</span>
+                <span id="visibility" class="metric-mini__value">-- km</span>
+              </div>
+              <div class="metric-mini">
+                <span class="metric-mini__label">UV Index</span>
+                <span id="uvIndex" class="metric-mini__value">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ondas -->
+        <div class="card card--waves">
+          <div class="card__header">
+            <span class="card__icon">🏄</span>
+            <h3 class="card__title">Ondas</h3>
+          </div>
+          <div class="card__body">
+            <div class="metric metric--large">
+              <span id="waveHeight" class="metric__value">--</span>
+              <span class="metric__unit">m</span>
+            </div>
+            <div class="metric-row">
+              <div class="metric-mini">
+                <span class="metric-mini__label">Período</span>
+                <span id="wavePeriod" class="metric-mini__value">-- s</span>
+              </div>
+              <div class="metric-mini">
+                <span class="metric-mini__label">Direção</span>
+                <span id="waveDirection" class="metric-mini__value">--°</span>
+              </div>
+            </div>
+            <div id="waveBadge" class="wave-badge"></div>
+          </div>
+        </div>
+
+        <!-- Vento -->
+        <div class="card card--wind">
+          <div class="card__header">
+            <span class="card__icon">💨</span>
+            <h3 class="card__title">Vento</h3>
+          </div>
+          <div class="card__body">
+            <div class="metric metric--large">
+              <span id="windSpeed" class="metric__value">--</span>
+              <span class="metric__unit">km/h</span>
+            </div>
+            <div class="metric-row">
+              <div class="metric-mini">
+                <span class="metric-mini__label">Direção</span>
+                <span id="windDir" class="metric-mini__value">--</span>
+              </div>
+              <div class="metric-mini">
+                <span class="metric-mini__label">Rajadas</span>
+                <span id="windGusts" class="metric-mini__value">-- km/h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nível do Mar / Maré -->
+        <div class="card card--tide">
+          <div class="card__header">
+            <span class="card__icon">🌊</span>
+            <h3 class="card__title">Maré</h3>
+          </div>
+          <div class="card__body">
+            <div class="metric metric--large">
+              <span id="tideLevel" class="metric__value">--</span>
+              <span class="metric__unit">m</span>
+            </div>
+            <div class="metric-row">
+              <div class="metric-mini">
+                <span class="metric-mini__label">Correnteza</span>
+                <span id="oceanCurrent" class="metric-mini__value">-- km/h</span>
+              </div>
+              <div class="metric-mini">
+                <span class="metric-mini__label">Pressão</span>
+                <span id="pressure" class="metric-mini__value">-- hPa</span>
+              </div>
+            </div>
+            <div id="tideBadge" class="tide-badge"></div>
+          </div>
+        </div>
+
+        <!-- Condição Geral -->
+        <div class="card card--status">
+          <div class="card__header">
+            <span class="card__icon">🏖️</span>
+            <h3 class="card__title">Condição da Praia</h3>
+          </div>
+          <div class="card__body">
+            <div id="beachStatus" class="beach-status">
+              <span id="statusIcon" class="status-icon"></span>
+              <span id="statusText" class="status-text"></span>
+            </div>
+            <ul id="statusDetails" class="status-details"></ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Forecast Section -->
+      <div class="forecast-section">
+        <h3 class="forecast-title">📅 Previsão para os Próximos 7 Dias</h3>
+        <div id="forecastGrid" class="forecast-grid"></div>
+      </div>
+
+      <!-- Marine Forecast Section -->
+      <div class="forecast-section">
+        <h3 class="forecast-title">🌊 Previsão de Ondas — Próximas 24h</h3>
+        <div id="marineHourlyGrid" class="marine-hourly-grid"></div>
+      </div>
+
+      <!-- Last Updated -->
+      <p id="lastUpdated" class="last-updated"></p>
+
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p>
+      🌊 Beach Monitor — Dados fornecidos por
+      <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> &amp;
+      <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap Nominatim</a>
+    </p>
+    <p class="footer__sub">APIs gratuitas e de código aberto. Atualizado em tempo real.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
